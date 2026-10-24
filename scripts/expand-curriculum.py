@@ -15,7 +15,7 @@ def q(c, slug, title, scenario, concept, task, signature, solution, tests, sampl
     assert checks.count('assert ') + checks.count('raise AssertionError') >= 3, title
     imports = ''.join(f'import {p} as {"pd" if p=="pandas" else "np"}\n' for p in (packages or []))
     starter = imports+'\n'+signature+':\n    # Implement the contract described in Your quest.\n    pass\n\n'+sample+'\n'
-    c['lessons'].append(dict(id=c['id']+'-'+slug,title=title,summary=scenario,theory=scenario+'\n\n'+concept+'\n\nWork from the function contract: inspect the sample, implement the transformation, then check boundary cases. Return data rather than printing inside the function; the sample print is only for inspection.',example=sample,task=task,starter=starter,hint=hint,solution=code+'\n'+sample+'\n',tests=checks,input='',minutes=45 if project else 25,xp=150 if project else 75,packages=packages or [],project=project))
+    c['lessons'].append(dict(id=c['id']+'-'+slug,title=title,summary=scenario,theory=concept+'\n\nWork from the function contract: inspect the sample, implement the transformation, then check boundary cases. Return data rather than printing inside the function; the sample print is only for inspection.',example=sample,task=task,starter=starter,hint=hint,solution=code+'\n'+sample+'\n',tests=checks,input='',minutes=45 if project else 25,xp=150 if project else 75,packages=packages or [],project=project))
 
 c=course('data-toolkit','Python for Messy Data','Turn strings, files, timestamps, and nested records into trustworthy inputs.','Data foundations','🧰','#bde58c')
 q(c,'money','Money without float surprises','A finance export mixes rupee signs, commas, whitespace, and missing amounts.',
