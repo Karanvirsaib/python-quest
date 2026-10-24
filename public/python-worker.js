@@ -4,6 +4,8 @@ self.onmessage = async ({data}) => {
   let globals;
   try {
     const py = await ready;
+    self.postMessage({ type: 'loading', message: 'Preparing Python packages… first-time data libraries may take a moment.' });
+    await py.loadPackagesFromImports(data.code + '\n' + (data.tests || ''));
     self.postMessage({ type: 'ready' });
     let output = '';
     py.setStdout({batched: text => { output += text + '\n'; if (output.length > 20000) throw new Error('Output limit reached. Try a smaller loop.'); }});
