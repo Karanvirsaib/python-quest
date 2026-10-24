@@ -32,6 +32,8 @@ The default base path is `/python-quest/`. The workflow sets it from the reposit
 
 ## Sharing
 
+Publication is initially paused while repository/site visibility is being chosen. To enable it, select **Settings → Pages → Source → GitHub Actions**, then add a repository Actions variable `ENABLE_PAGES` with value `true` under **Settings → Secrets and variables → Actions → Variables**. Run the workflow once. A public repository supports free GitHub Pages; a private repository may require a paid GitHub plan. Once enabled, every successful push to `main` republishes the website.
+
 Send the GitHub Pages website URL to a friend. Each person starts with their own browser-local profile; your account-backed progress and database are not published. The public source includes questions, solutions, and tests; this is a learning platform, not a secure examination system.
 
 ## Data and hosting
