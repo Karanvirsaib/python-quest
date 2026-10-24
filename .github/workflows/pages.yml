@@ -1,4 +1,4 @@
-name: Publish Python Quest
+name: Check Python Quest
 on:
   push:
     branches: [main]
