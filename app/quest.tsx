@@ -1,0 +1,159 @@
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Code2, Compass, Flame, Gem, LayoutGrid, Lightbulb, Loader2, LogOut, Map, Play, RotateCcw, Save, Search, Settings, Sparkles, Square, Terminal, Trophy, X } from 'lucide-react';
+import { courses, type Course, type Lesson } from './curriculum';
+type RecordState = { lessonId: string; code: string; notes: string; completed: boolean; completedAt: string | null; updatedAt: string };
+type User = {name: string; email: string} | null;
+type View = 'learn' | 'practice' | 'progress' | 'settings';
+const allLessons = courses.flatMap(c => c.lessons);
+const signin = '/signin-with-chatgpt?return_to=%2F';
+function World({ variant = 0 }: {variant?: number}) {
+  return <svg className="world" viewBox="0 0 700 350" aria-hidden="true"><defs><linearGradient id={`sky${variant}`} x2="0" y2="1"><stop stopColor="#193d46"/><stop offset="1" stopColor="#326a63"/></linearGradient><linearGradient id={`rock${variant}`} x2="0" y2="1"><stop stopColor="#456e60"/><stop offset="1" stopColor="#1a3839"/></linearGradient></defs><rect width="700" height="350" fill={`url(#sky${variant})`}/><circle cx="530" cy="65" r="34" fill="#e0eeb4" opacity=".85"/><path d="M0 211 100 85 165 155 263 36 380 188 450 106 567 216 650 140 700 175V350H0Z" fill="#254e50"/><path d="m160 155 103-119 91 123-91-42Z" fill="#62877b" opacity=".35"/><path d="M0 282 85 239 156 268 230 220 325 260 401 229 509 265 605 226 700 266V350H0Z" fill="#163f3c"/>
+  <g className="island"><path d="m278 201 93-27 129 41-22 42-100 54-76-43Z" fill={`url(#rock${variant})`}/><path d="m278 201 94-39 128 53-103 43Z" fill="#6a9a65"/><path d="m285 197 87-28 116 45-91 36Z" fill="#8fbc74"/><path d="m367 171 18 27-31 22 31 21 19 5-29-27 27-22-20-23Z" fill="#ded2a0"/><path d="m400 252 18-9-8 37-12 8Z" fill="#b0eee1"/><path d="m418 243-8 37 8-4 11-37Z" fill="#77bbba"/>
+  <g fill="#31594d"><path d="M310 201v-39h5v40Z"/><path d="m291 179 22-42 23 42Zm4-17 18-37 19 37Z" fill="#43794d"/><path d="M448 213v-48h5v49Z"/><path d="m427 185 24-44 25 44Zm5-21 19-37 21 37Z" fill="#3f7550"/></g>
+  <g transform="translate(385 160)"><path d="M0 5 23-12 46 5v36L23 53 0 40Z" fill="#b3aa80"/><path d="m0 5 23-17L46 5 23 18Z" fill="#dad2a0"/><path d="M17 22q7-13 14 0v22l-14 7Z" fill="#244943"/><path d="m23-12 0-32 21 7-21 7" fill="#caf58c"/><path d="M23-12v-32" stroke="#ded2a0" strokeWidth="2"/></g>
+  <g transform="translate(344 214)"><path d="M0 0h9v10H0Z" fill="#f5cba1"/><path d="M-2 10h13v12H-2Z" fill="#e9b94d"/><path d="M0 22v7m9-7v7" stroke="#243c40" strokeWidth="4"/><path d="M-2-2h13v5H-2Z" fill="#7f5943"/></g></g>
+  <path d="m80 160 45-16 40 17-43 22Z" fill="#77a271"/><path d="m80 160 9 21 33 20 43-40-43 22Z" fill="#305a4d"/><path d="m570 160 43-17 48 21-40 18Z" fill="#86b679"/><path d="m570 160 14 29 37 19 40-44-40 18Z" fill="#305a4d"/><g fill="#c8e7b8" opacity=".6"><rect x="100" y="70" width="3" height="3"/><rect x="420" y="46" width="3" height="3"/><rect x="605" y="100" width="3" height="3"/><rect x="214" y="100" width="3" height="3"/></g></svg>;
+}
+export default function Quest({ user }: {user: User}) {
+  const [view,setView] = useState<View>('learn');
+  const [course,setCourse] = useState<Course>(courses[0]);
+  const [records,setRecords] = useState<Record<string, RecordState>>({});
+  const [profile,setProfile] = useState({name:'Explorer',goal:1});
+  const [loading,setLoading] = useState(!!user);
+  const [syncError,setSyncError] = useState('');
+  const [lesson,setLesson] = useState<Lesson|null>(null);
+  const [query,setQuery] = useState('');
+  const [toast,setToast] = useState('');
+  const [saveBusy,setSaveBusy] = useState(false);
+  const [filter,setFilter] = useState('All courses');
+  const toastTimer = useRef<ReturnType<typeof setTimeout>|null>(null);
+  function announce(message:string) { setToast(message); if(toastTimer.current)clearTimeout(toastTimer.current); toastTimer.current=setTimeout(()=>setToast(''),5000); }
+  async function load() {
+    if(!user)return;
+    setLoading(true);setSyncError('');
+    try { const res=await fetch('/api/progress'); const data=await res.json() as {error?:string;records:RecordState[];profile:{name:string;goal:number}}; if(!res.ok)throw new Error(data.error); setRecords(Object.fromEntries(data.records.map((r:RecordState)=>[r.lessonId,r])));setProfile(data.profile); }
+    catch(e) {setSyncError(e instanceof Error?e.message:'Could not load progress.');}
+    finally{setLoading(false);}
+  }
+  useEffect(()=>{load();return()=>{if(toastTimer.current)clearTimeout(toastTimer.current);};},[]);
+  const done=allLessons.filter(l=>records[l.id]?.completed);
+  const xp=done.reduce((sum,l)=>sum+l.xp,0);
+  const level=Math.floor(xp/250)+1;
+  const count=(c:Course)=>c.lessons.filter(l=>records[l.id]?.completed).length;
+  const next=course.lessons.find(l=>!records[l.id]?.completed)||course.lessons[0];
+  const days=new Set(done.map(l=>new Date(records[l.id].completedAt||'').toLocaleDateString('en-CA')));
+  let streak=0;const cursor=new Date();if(!days.has(cursor.toLocaleDateString('en-CA')))cursor.setDate(cursor.getDate()-1);
+  while(days.has(cursor.toLocaleDateString('en-CA'))){streak++;cursor.setDate(cursor.getDate()-1);}
+  const today=done.filter(l=>new Date(records[l.id].completedAt||'').toDateString()===new Date().toDateString()).length;
+  async function save(l:Lesson,code:string,notes:string,completed:boolean) {
+    if(!user)throw new Error('Sign in to save your progress across devices.');
+    if(loading||syncError)throw new Error('Load your saved progress before saving. Use Retry above.');
+    const record:RecordState={lessonId:l.id,code,notes,completed:completed||!!records[l.id]?.completed,completedAt:records[l.id]?.completedAt||(completed?new Date().toISOString():null),updatedAt:new Date().toISOString()};
+    const res=await fetch('/api/progress',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
+    const data=await res.json() as {error?:string};if(!res.ok)throw new Error(data.error);
+    setRecords(prev=>({...prev,[l.id]:record}));
+  }
+  function openLesson(l:Lesson) {setLesson(l);}
+  async function saveProfile(e:React.FormEvent) {
+    e.preventDefault();setSaveBusy(true);
+    try {const res=await fetch('/api/progress',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile})});const data=await res.json() as {error?:string};if(!res.ok)throw new Error(data.error);announce('Your explorer profile is saved.');}catch(e){announce(e instanceof Error?e.message:'Could not save.');}finally{setSaveBusy(false);}
+  }
+  const badges=[{title:'First steps',text:'Complete your first lesson',icon:'🌱',earned:done.length>=1},{title:'On a roll',text:'Complete 6 lessons',icon:'🔥',earned:done.length>=6},{title:'Trailblazer',text:'Finish Python Foundations',icon:'🧭',earned:count(courses[0])===6},{title:'Crystal collector',text:'Finish Lists & Collections',icon:'💎',earned:count(courses[2])===6},{title:'Toolmaker',text:'Finish Functions & Problem Solving',icon:'⚒️',earned:count(courses[3])===6},{title:'World explorer',text:'Complete all 24 lessons',icon:'🏆',earned:done.length===24}];
+  return <div className="app-shell">
+    <aside className="sidebar"><a href="/" className="brand"><span className="brand-icon"><Code2 size={21}/></span><span>python<span className="brand-light">quest</span><small>LEARN. BUILD. LEVEL UP.</small></span></a>
+      <div className="nav-caption">YOUR ADVENTURE</div><nav aria-label="Main navigation">{([{id:'learn',label:'Learn',icon:Map},{id:'practice',label:'Practice',icon:Code2},{id:'progress',label:'Your progress',icon:Trophy}] as const).map(n=><button key={n.id} onClick={()=>setView(n.id)} className={`nav-item ${view===n.id?'active':''}`}><n.icon size={19}/>{n.label}{view===n.id&&<span className="nav-dot"/>}</button>)}</nav>
+      <div className="nav-caption course-caption">YOUR WORLDS <span>04</span></div><div className="world-nav">{courses.map((c,i)=><button key={c.id} className={course.id===c.id&&view==='learn'?'selected':''} onClick={()=>{setCourse(c);setView('learn');}}><span style={{color:c.color}}>◈</span><span>{c.land}</span><small>0{i+1}</small></button>)}</div>
+      <div className="sidebar-bottom"><div className="mini-note"><Sparkles size={18}/><b>Small steps. Real skills.</b><p>Every line of code takes you somewhere new.</p></div><button className={`nav-item ${view==='settings'?'active':''}`} onClick={()=>setView('settings')}><Settings size={18}/>Settings</button><div className="account-mini"><span className="avatar">{(user?profile.name:'G').slice(0,1).toUpperCase()}</span><div><b>{user?profile.name:'Guest explorer'}</b><small>Level {level} · {xp} XP</small></div>{user?<a aria-label="Sign out" href="/signout-with-chatgpt?return_to=%2F" target="_top"><LogOut size={16}/></a>:<a href={signin} target="_top">Sign in</a>}</div></div>
+    </aside>
+    <div className="main-shell"><header className="topbar"><div className="breadcrumb">Your adventure <ChevronRight size={14}/><b>{view==='learn'?'Learn':view==='practice'?'Practice':view==='progress'?'Your progress':'Settings'}</b></div><div className="top-stats"><span title="Consecutive learning days"><Flame size={17}/>{streak}<small>day streak</small></span><span><Gem size={17}/>{xp}<small>XP</small></span><button className="avatar small" onClick={()=>setView('settings')} aria-label="Open profile">{(user?profile.name:'G').slice(0,1).toUpperCase()}</button></div></header>
+    <main className="main-content">
+      {loading&&<div className="notice"><Loader2 className="spin" size={16}/>Loading your saved adventure…</div>}
+      {syncError&&<div className="notice error" role="alert">{syncError}<button onClick={load}>Retry</button></div>}
+      {!user&&<div className="notice">Explore every lesson for free. <a href={signin} target="_top">Sign in with ChatGPT to save your progress <ArrowRight size={14}/></a></div>}
+      {view==='learn'&&<><div className="page-heading"><div><div className="eyebrow">A LITTLE CODE. A NEW ADVENTURE.</div><h1>Your next chapter starts here<span>.</span></h1><p>Learn by doing. Take the scenic route. Make something yours.</p></div><span className="tiny-tag"><span/>PERSONAL LEARNING SPACE</span></div>
+        <div className="learn-grid"><div className="course-main"><section className="hero" style={{'--course-color':course.color} as React.CSSProperties}><div className="hero-copy"><span className="pill">{course.level.toUpperCase()} <span>·</span> WORLD 0{courses.indexOf(course)+1}</span><h2>{course.title}</h2><p>{course.description}</p><button className="primary" onClick={()=>openLesson(next)} disabled={loading||!!syncError}>{count(course)>0?'Continue adventure':'Start your adventure'}<ArrowRight size={17}/></button><div className="hero-meta"><span><BookOpen size={14}/>6 lessons</span><span>◷ {course.time}</span><span>✧ 350 XP</span></div></div><div className="hero-world"><World variant={courses.indexOf(course)}/><span className="world-label">{course.land.toUpperCase()}</span></div></section>
+        <div className="section-heading"><div><h2>The learning path</h2><p>One discovery at a time.</p></div><span className="muted">{count(course)} / 6 completed</span></div>
+        <section className="lesson-list" aria-label={`${course.title} lessons`}>{course.lessons.map((l,i)=>{const complete=records[l.id]?.completed;const current=next.id===l.id;return <button className={`lesson-row ${complete?'complete':current?'current':''}`} key={l.id} onClick={()=>openLesson(l)} disabled={loading||!!syncError}><span className="lesson-node">{complete?<Check size={18}/>:i===5?<Trophy size={18}/>:String(i+1).padStart(2,'0')}</span><span className="lesson-info"><b>{l.title}{i===5&&<span className="project-tag">PROJECT</span>}</b><small>{l.summary}</small></span><span className="lesson-time">{l.minutes} min</span><span className="lesson-xp">+{l.xp} XP</span><span className="lesson-action">{complete?'Review':current?'Start':'Explore'}<ChevronRight size={15}/></span></button>;})}</section>
+        </div><aside className="right-rail"><section className="profile-card"><div className="profile-cover"><span className="pixel-spark">✧</span><span className="explorer">🧑‍🚀</span><span className="pixel-spark two">✦</span></div><h3>{user?profile.name:'Hello, explorer!'}</h3><p>{user?'Every adventure starts somewhere.':'Your coding adventure is waiting.'}</p><div className="level-line"><b>LEVEL {level}</b><span>{xp%250} / 250 XP</span></div><div className="progress-track"><span style={{width:`${xp%250/250*100}%`}}/></div><div className="profile-stats"><div><b>{done.length}</b><small>lessons done</small></div><div><b>{badges.filter(b=>b.earned).length}</b><small>badges earned</small></div></div></section>
+        <section className="daily-card"><div className="card-title"><span className="icon-box"><Flame size={18}/></span><h3>Your daily quest</h3></div><p>A little practice goes a long way.</p><div className="daily-meter"><b>Complete {profile.goal} lesson{profile.goal>1?'s':''}</b><span>{Math.min(today,profile.goal)}/{profile.goal}</span></div><div className="progress-track"><span style={{width:`${Math.min(today/profile.goal,1)*100}%`}}/></div><small>{today>=profile.goal?'Quest complete. See you tomorrow!':'Keep showing up for your future self.'}</small></section>
+        <section className="tip-card"><Lightbulb size={21}/><span className="eyebrow">A FRIENDLY REMINDER</span><p>You don’t have to be great to start. You just have to start.</p><span className="tip-dots">· · ·</span></section></aside></div>
+        <div className="section-heading explore-heading"><div><h2>A whole world to explore</h2><p>Pick your next destination. All courses are yours.</p></div><span className="tiny-tag">4 ORIGINAL COURSES</span></div><div className="course-cards">{courses.map((c,i)=><button key={c.id} className={`course-card ${course.id===c.id?'chosen':''}`} onClick={()=>{setCourse(c);window.scrollTo({top:0,behavior:'smooth'});}} style={{'--course-color':c.color} as React.CSSProperties}><div className={`course-art art-${i}`}><span>{c.icon}</span><small>WORLD 0{i+1}</small><div className="art-orbit"/></div><div className="course-card-body"><span className="course-level">{c.level}</span><h3>{c.title}</h3><p>{c.subtitle}</p><div className="card-meta"><span>6 lessons</span><span>{count(c)?`${count(c)}/6 complete`:'Begin exploring'}<ArrowRight size={14}/></span></div></div></button>)}</div>
+      </>}
+      {view==='practice'&&<><div className="page-heading"><div><div className="eyebrow">KEEP YOUR SKILLS SHARP</div><h1>Your practice playground<span>.</span></h1><p>Revisit a challenge or experiment in a blank Python sandbox.</p></div><button className="primary" onClick={()=>setLesson({id:'sandbox',title:'Python sandbox',summary:'Room to experiment.',theory:'Try an idea, test a function, or work through a problem. This is your blank canvas. Python runs in your browser; use Program input for input() calls. Sandbox drafts are saved on this device.',example:"print('What will you build?')",task:'Explore freely. The sandbox has no exercise checks or XP.',starter:"# A little room for a big idea\n",hint:'Start small and run your code often.',solution:'',tests:'',minutes:0,xp:0,input:''})}><Code2 size={17}/>Open sandbox</button></div><div className="practice-tools"><label className="search-box"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a challenge…" aria-label="Find a challenge"/></label><select aria-label="Filter by course" value={filter} onChange={e=>setFilter(e.target.value)}><option>All courses</option>{courses.map(c=><option key={c.id}>{c.title}</option>)}</select></div><div className="practice-grid">{courses.filter(c=>filter==='All courses'||filter===c.title).flatMap(c=>c.lessons.filter(l=>(l.title+' '+l.summary).toLowerCase().includes(query.toLowerCase())).map(l=><button key={l.id} className="practice-card" onClick={()=>openLesson(l)}><span className="course-level" style={{color:c.color}}>{c.title}</span><h3>{l.title}</h3><p>{l.summary}</p><div><span>{records[l.id]?.completed?<><CheckCircle2 size={14}/>Completed</>:`${l.minutes} min · ${l.xp} XP`}</span><ArrowRight size={17}/></div></button>))}</div>{!courses.filter(c=>filter==='All courses'||filter===c.title).some(c=>c.lessons.some(l=>(l.title+' '+l.summary).toLowerCase().includes(query.toLowerCase())))&&<div className="empty-state"><Search/><h3>No challenges found</h3><p>Try another title or select a different course.</p><button className="secondary" onClick={()=>{setQuery('');setFilter('All courses');}}>Clear filters</button></div>}</>}
+      {view==='progress'&&<><div className="page-heading"><div><div className="eyebrow">LOOK HOW FAR YOU’VE COME</div><h1>Every step counts<span>.</span></h1><p>Your discoveries, milestones, and little victories.</p></div></div><div className="stats-grid">{[{label:'Total experience',value:`${xp} XP`,icon:Gem},{label:'Lessons completed',value:`${done.length} / 24`,icon:BookOpen},{label:'Current streak',value:`${streak} days`,icon:Flame},{label:'Explorer level',value:String(level),icon:Compass}].map(s=><section className="stat-card" key={s.label}><s.icon size={21}/><b>{s.value}</b><span>{s.label}</span></section>)}</div><div className="section-heading"><div><h2>Your worlds</h2><p>Finish each path at your own pace.</p></div></div><div className="progress-courses">{courses.map(c=><button key={c.id} onClick={()=>{setCourse(c);setView('learn');}}><span className="world-emoji">{c.icon}</span><div><h3>{c.title}</h3><div className="progress-track"><span style={{width:`${count(c)/6*100}%`,background:c.color}}/></div></div><span>{count(c)}/6</span><ChevronRight size={17}/></button>)}</div><div className="section-heading"><div><h2>A shelf for your achievements</h2><p>Earned through practice, one lesson at a time.</p></div></div><div className="badge-grid">{badges.map(b=><section className={`badge-card ${b.earned?'earned':''}`} key={b.title}><span>{b.icon}</span><h3>{b.title}</h3><p>{b.text}</p><small>{b.earned?'✓ Earned':'Still to discover'}</small></section>)}</div></>}
+      {view==='settings'&&<><div className="page-heading"><div><div className="eyebrow">MAKE YOURSELF AT HOME</div><h1>Your explorer profile<span>.</span></h1><p>A name for your adventure. A pace that works for you.</p></div></div><form className="settings-card" onSubmit={saveProfile}><span className="avatar large">{profile.name.slice(0,1).toUpperCase()}</span><h2>Learning preferences</h2><label>Explorer name<input value={profile.name} maxLength={40} required onChange={e=>setProfile({...profile,name:e.target.value})}/></label><label>Daily learning goal<select value={profile.goal} onChange={e=>setProfile({...profile,goal:Number(e.target.value)})}><option value={1}>A gentle start · 1 lesson per day</option><option value={2}>A steady pace · 2 lessons per day</option><option value={3}>Adventure mode · 3 lessons per day</option></select></label><label>Account<input value={user?.email||'Sign in to create your learning account'} disabled/></label><p className="muted">Your code drafts, notes, and progress sync to your signed-in account. Python runs on your device using Pyodide; its first load needs an internet connection.</p>{user?<button disabled={saveBusy||loading||!!syncError} className="primary" type="submit">{saveBusy?<Loader2 className="spin" size={16}/>:<Save size={16}/>}Save preferences</button>:<a className="primary" href={signin} target="_top">Sign in with ChatGPT<ArrowRight size={16}/></a>}</form><div className="about-note"><Code2 size={20}/><div><b>Made for your own learning journey.</b><p>Python Quest has an original curriculum and artwork. It is an independent project inspired by learning through practice.</p></div></div></>}
+      <footer><span>pythonquest <span className="footer-dot">·</span> A little progress, every day.</span><span>Made for curious minds <Sparkles size={13}/></span></footer>
+    </main></div>
+    {lesson&&<LessonStudio key={lesson.id} lesson={lesson} record={records[lesson.id]} signedIn={!!user} onSave={save} onClose={()=>setLesson(null)} onNext={()=>{const index=allLessons.findIndex(l=>l.id===lesson.id);if(index>=0&&index<allLessons.length-1){const next=allLessons[index+1];setLesson(next);setCourse(courses.find(c=>c.lessons.some(l=>l.id===next.id))!);}else{setLesson(null);setView('progress');}}}/>}
+    {toast&&<div className="toast" role="status">{toast}<button aria-label="Dismiss notification" onClick={()=>setToast('')}><X size={16}/></button></div>}
+  </div>;
+}
+function LessonStudio({lesson,record,signedIn,onSave,onClose,onNext}:{lesson:Lesson;record?:RecordState;signedIn:boolean;onSave:(l:Lesson,c:string,n:string,complete:boolean)=>Promise<void>;onClose:()=>void;onNext:()=>void}) {
+  const sandbox=lesson.id==='sandbox';
+  const [code,setCode]=useState(record?.code??lesson.starter);
+  const [notes,setNotes]=useState(record?.notes??'');
+  const [input,setInput]=useState(lesson.input);
+  const [output,setOutput]=useState('Your output will appear here. Run your code to get started.');
+  const [busy,setBusy]=useState(false);
+  const [status,setStatus]=useState('');
+  const [error,setError]=useState(false);
+  const [hint,setHint]=useState(false);
+  const [solution,setSolution]=useState(false);
+  const [passed,setPassed]=useState(!!record?.completed);
+  const [saving,setSaving]=useState(false);
+  const [dirty,setDirty]=useState(false);
+  const [tab,setTab]=useState<'lesson'|'notes'>('lesson');
+  const worker=useRef<Worker|null>(null);
+  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const runCode=useRef('');
+  const savedCode=useRef(record?.code??lesson.starter);
+  const savedNotes=useRef(record?.notes??'');
+  const passCode=useRef<string|null>(null);
+  const savingRef=useRef(false);
+  const outputRef=useRef<HTMLPreElement>(null);
+  const closeRef=useRef<HTMLButtonElement>(null);
+  const dirtyRef=useRef(dirty);dirtyRef.current=dirty;
+  useEffect(()=>{closeRef.current?.focus();const before=(e:BeforeUnloadEvent)=>{if(dirtyRef.current){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',before);const previous=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{worker.current?.terminate();if(timer.current)clearTimeout(timer.current);window.removeEventListener('beforeunload',before);document.body.style.overflow=previous;};},[]);
+  useEffect(()=>{if(sandbox){try{setCode(localStorage.getItem('quest-sandbox')||lesson.starter);setNotes(localStorage.getItem('quest-sandbox-notes')||'');}catch{}}},[]);
+  function change(value:string){setCode(value);setDirty(true);setPassed(false);if(sandbox){try{localStorage.setItem('quest-sandbox',value);}catch{}}}
+  function stop(){worker.current?.terminate();worker.current=null;if(timer.current)clearTimeout(timer.current);setBusy(false);setStatus('Stopped. Your code is still in the editor.');}
+  async function save(completed=false, override?:string){
+    if(sandbox){try{localStorage.setItem('quest-sandbox',code);localStorage.setItem('quest-sandbox-notes',notes);setStatus('Sandbox draft and notes saved on this device.');setDirty(false);}catch{setStatus('Device storage is unavailable. Copy your work before leaving.');}return;}
+    if(savingRef.current)return;
+    savingRef.current=true;setSaving(true);
+    const snapshot=override??code;const noteSnapshot=notes;
+    try{await onSave(lesson,snapshot,noteSnapshot,completed);savedCode.current=snapshot;savedNotes.current=noteSnapshot;setDirty(code!==snapshot||notes!==noteSnapshot);setStatus(completed?`Quest complete! +${lesson.xp} XP. Progress saved.`:'Draft and notes saved.');}
+    catch(e){setStatus(e instanceof Error?e.message:'Could not save.');setDirty(true);}
+    finally{savingRef.current=false;setSaving(false);}
+  }
+  function close(){if(busy){stop();}if(dirty&&!sandbox&&!window.confirm('Leave this lesson with unsaved changes? Use Save draft to keep your work.'))return;onClose();}
+  function run(check:boolean){
+    if(busy)return;setBusy(true);setError(false);setStatus('Starting Python… first load may take a moment.');setOutput('');runCode.current=code;
+    if(!worker.current)worker.current=new Worker('/python-worker.js',{type:'module'});
+    const finish=()=>{if(timer.current)clearTimeout(timer.current);setBusy(false);};
+    const timeout=(ms:number)=>{if(timer.current)clearTimeout(timer.current);timer.current=setTimeout(()=>{worker.current?.terminate();worker.current=null;setBusy(false);setError(true);setStatus('Time limit reached. Check for an endless loop and run again.');},ms);};
+    worker.current.onmessage=({data})=>{
+      if(data.type==='ready'){setStatus(check?'Running exercise checks…':'Running Python…');timeout(10000);return;}
+      finish();
+      if(data.type==='error'){setOutput(data.error);setError(true);setStatus('Python found an error. Read the last line of the traceback.');return;}
+      setOutput(data.output||'(Program finished without printing output.)');
+      if(check){if(data.passed){setPassed(true);passCode.current=runCode.current;if(signedIn)void save(true,runCode.current);else setStatus('Checks passed! Sign in to save your achievement.');}else{setError(true);setStatus(data.feedback||'Not quite yet. Compare your result with the task and try again.');}}
+      else setStatus('Program finished. Use Check answer when you’re ready.');
+    };
+    worker.current.onerror=()=>{finish();worker.current?.terminate();worker.current=null;setError(true);setOutput('Could not load the Python runtime. Check your connection and try again.');setStatus('Python runtime unavailable.');};
+    timeout(120000);
+    worker.current.postMessage({code,input,tests:check?lesson.tests:''});
+  }
+  return <div className="studio" role="dialog" aria-modal="true" aria-label={lesson.title} onKeyDown={e=>{if(e.key==='Escape')close();if(e.key==='Tab'){const controls=Array.from(e.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled),a[href],textarea,input,select')).filter(el=>el.offsetParent!==null);const first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}}}>
+    <header className="studio-header"><button ref={closeRef} className="back-button" onClick={close}><ArrowLeft size={18}/><span>Back to adventure</span></button><div><span className="eyebrow">{sandbox?'YOUR PLAYGROUND':courses.find(c=>c.lessons.some(l=>l.id===lesson.id))?.title}</span><h2>{lesson.title}</h2></div><span className="xp-pill">{sandbox?'PYTHON 3':`+${lesson.xp} XP`}</span></header>
+    <div className="studio-body"><section className="lesson-panel"><div className="panel-tabs"><button className={tab==='lesson'?'active':''} onClick={()=>setTab('lesson')}><BookOpen size={16}/>Lesson</button><button className={tab==='notes'?'active':''} onClick={()=>setTab('notes')}><Save size={15}/>My notes</button></div><div className="lesson-scroll">{tab==='lesson'?<><span className="lesson-kicker">{sandbox?'EXPERIMENT & EXPLORE':'THE DISCOVERY'}</span><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.summary}</p>{lesson.theory.split('\n\n').map((p,i)=><p key={i}>{p}</p>)}<pre className="example-code"><code>{lesson.example}</code></pre><div className="challenge"><span className="eyebrow"><Compass size={15}/>YOUR QUEST</span><p>{lesson.task}</p>{lesson.input&&<small>Program input is prefilled with {lesson.input}.</small>}</div>{!sandbox&&<><button className="text-button" onClick={()=>setHint(!hint)}><Lightbulb size={16}/>{hint?'Hide hint':'A little nudge?'}<ChevronRight size={14}/></button>{hint&&<div className="hint-box">{lesson.hint}</div>}<details className="solution-box" open={solution} onToggle={e=>setSolution(e.currentTarget.open)}><summary>View a worked solution</summary><p>Try the challenge first. Then compare the approach with your own.</p><pre><code>{lesson.solution}</code></pre></details></>}</>:<><h2>Your field notes</h2><p>Write down what clicked, what surprised you, or what to revisit.</p><textarea className="notes-editor" aria-label="Lesson notes" readOnly={busy||saving} value={notes} maxLength={10000} onChange={e=>{setNotes(e.target.value);setDirty(true);}} placeholder="Today I learned…"/><small className="muted">Notes are saved with your code when you choose Save draft.</small></>}</div></section>
+    <section className="code-panel"><div className="editor-heading"><span><span className="file-dot"/>main.py</span><span className="muted">Python 3 <span className="live-dot"/></span></div><div className="code-area"><div className="line-numbers" aria-hidden="true">{code.split('\n').map((_,i)=><div key={i}>{i+1}</div>)}</div><textarea aria-label="Python code editor" readOnly={busy||saving} spellCheck={false} autoCapitalize="off" autoCorrect="off" value={code} maxLength={50000} onChange={e=>change(e.target.value)} onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();const start=e.currentTarget.selectionStart;const end=e.currentTarget.selectionEnd;change(code.slice(0,start)+'    '+code.slice(end));const el=e.currentTarget;requestAnimationFrame(()=>{el.selectionStart=el.selectionEnd=start+4;});}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run(false);}}} /></div><div className="editor-controls"><button className="secondary" onClick={()=>{if(code!==lesson.starter&&!window.confirm('Replace the current code with the starter?'))return;change(lesson.starter);setPassed(false);}} disabled={busy}><RotateCcw size={14}/>Reset</button><button className="secondary" onClick={()=>save(passed&&passCode.current===code)} disabled={saving||busy||(!signedIn&&!sandbox)}><Save size={14}/>{saving?'Saving…':'Save draft'}</button><span className="shortcut">Ctrl ↵ to run</span>{busy?<button className="primary stop" onClick={stop}><Square size={14}/>Stop</button>:<button className="primary" onClick={()=>run(false)}><Play size={15}/>Run code</button>}</div>
+    <details className="stdin" open={!!lesson.input}><summary>Program input <span>For input() · one value per line</span></summary><textarea aria-label="Program input" value={input} onChange={e=>setInput(e.target.value)} placeholder="One answer per line"/></details>
+    <div className="terminal-heading"><span><Terminal size={15}/>TERMINAL</span><button aria-label="Clear terminal" onClick={()=>setOutput('')}>Clear</button></div><pre ref={outputRef} className={`terminal ${error?'terminal-error':''}`} aria-live="polite">{busy&&!output?<span className="muted">Python is working…</span>:output}</pre><div className={`run-status ${error?'status-error':passed?'status-success':''}`} role="status">{busy?<Loader2 size={15} className="spin"/>:passed?<CheckCircle2 size={16}/>:null}{status||'Ready when you are.'}{!signedIn&&passed&&<a href={signin} target="_top">Sign in</a>}</div>
+    <div className="studio-bottom"><span className="muted">{dirty?'Unsaved changes':record?.completed?'Previously completed':sandbox?'Device-local sandbox':'Your next discovery awaits'}</span>{!sandbox&&(passed?<button className="primary" disabled={busy||saving||dirty&&signedIn} onClick={onNext}>Next discovery<ArrowRight size={16}/></button>:<button className="primary check-button" disabled={busy||saving} onClick={()=>run(true)}><Check size={17}/>Check answer</button>)}</div></section></div>
+  </div>;
+}
+
+
+
