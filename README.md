@@ -25,3 +25,10 @@ The sandbox draft stays on the current device. Course code and notes sync when S
 ## Scope
 
 The twelve courses progress from Python fundamentals to data ingestion, NumPy, pandas, SQL, analytics, reliable pipelines, production troubleshooting, and eight business case studies. See DATA-CURRICULUM.md for the learning path and verification details. This release does not include other programming languages, AI tutoring, payments, or classroom administration. It does not use Codédex content, assets, branding, source code, or REA. Public interaction patterns were sufficient to build the independent experience.
+# Visual Lab
+
+The separate **Visual Lab** navigation tab covers all 88 lessons. It follows prediction, an editable worked example, real Python execution snapshots, and a link back to the original practice exercise. The original curriculum, exercise checks, account-backed progress, and practice runner are unchanged.
+
+The lab displays pre-line variable snapshots, function returns, arrays, dictionary entries, DataFrame previews, and small in-memory SQLite tables. It traces Python statements, not library internals. Snapshots are bounded to 240 events, 12 visible names, and small data previews; execution has a separate event budget and timeout. Lab drafts use their own browser-local keys and never award practice XP or mark a lesson complete. The visual worker is separate from the practice worker.
+
+Run `python scripts/check-visual-lab.py` with NumPy/pandas installed to validate all 88 demonstrations against their untraced outputs and check tracing limits. `scripts/build-visual-examples.py` regenerates the lab examples from the original solutions, adding explicit synthetic demonstrations where a function-only exercise needs a caller. It does not edit `app/curriculum.json`.

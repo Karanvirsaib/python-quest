@@ -1,0 +1,354 @@
+{
+  "trailhead-hello": {
+    "code": "print('Hello, explorer!')",
+    "input": ""
+  },
+  "trailhead-variables": {
+    "code": "explorer = 'Ada'\nprint(explorer)",
+    "input": ""
+  },
+  "trailhead-numbers": {
+    "code": "coins = 24\nmap_price = 5\nremaining = coins - 3 * map_price\nprint(remaining)",
+    "input": ""
+  },
+  "trailhead-strings": {
+    "code": "name = 'Ada'\nlevel = 3\nprint(f'{name} reached level {level}!')",
+    "input": ""
+  },
+  "trailhead-input": {
+    "code": "number = int(input())\nprint(number * 2)",
+    "input": "7"
+  },
+  "trailhead-postcard": {
+    "code": "traveler = 'Ada'\nkm_per_day = 6\ndays = 4\ntotal = km_per_day * days\nprint(f'{traveler} traveled {total} km.')",
+    "input": ""
+  },
+  "crossroads-conditions": {
+    "code": "coins = 12\nif coins >= 10:\n    print('Enter')\nelse:\n    print('Return')",
+    "input": ""
+  },
+  "crossroads-elif": {
+    "code": "temperature = 22\nif temperature >= 30:\n    print('Hot')\nelif temperature >= 15:\n    print('Mild')\nelse:\n    print('Cold')",
+    "input": ""
+  },
+  "crossroads-logic": {
+    "code": "has_key = True\nknows_password = True\nif has_key and knows_password:\n    print('Open')\nelse:\n    print('Locked')",
+    "input": ""
+  },
+  "crossroads-for": {
+    "code": "for step in range(1, 6):\n    print(step)",
+    "input": ""
+  },
+  "crossroads-while": {
+    "code": "count = 3\nwhile count > 0:\n    print(count)\n    count -= 1\nprint('Go!')",
+    "input": ""
+  },
+  "crossroads-treasure": {
+    "code": "total = 0\nfor coin in range(1, 11):\n    if coin % 2 == 0:\n        total += coin\nprint(total)",
+    "input": ""
+  },
+  "collections-lists": {
+    "code": "items = ['rope', 'map', 'lamp']\nprint(items[-1])",
+    "input": ""
+  },
+  "collections-mutate": {
+    "code": "bag = ['map', 'stone', 'rope']\nbag.append('potion')\nbag.remove('stone')\nprint(len(bag))",
+    "input": ""
+  },
+  "collections-dicts": {
+    "code": "player = {'name': 'Ada', 'level': 4}\nprint(player['level'])",
+    "input": ""
+  },
+  "collections-sets": {
+    "code": "gems = ['ruby', 'opal', 'ruby', 'jade', 'opal']\nunique_gems = set(gems)\nprint(len(unique_gems))",
+    "input": ""
+  },
+  "collections-comprehension": {
+    "code": "squares = [n ** 2 for n in range(1, 6)]\nprint(squares)",
+    "input": ""
+  },
+  "collections-loot": {
+    "code": "loot = [{'price': 10, 'count': 2}, {'price': 5, 'count': 3}]\ntotal_value = 0\nfor item in loot:\n    total_value += item['price'] * item['count']\nprint(total_value)",
+    "input": ""
+  },
+  "workshop-functions": {
+    "code": "def double(number):\n    return number * 2\n\nprint(double(6))",
+    "input": ""
+  },
+  "workshop-parameters": {
+    "code": "def greet(name='explorer'):\n    return f'Hello, {name}!'\n\nprint(greet())",
+    "input": ""
+  },
+  "workshop-errors": {
+    "code": "def safe_int(text):\n    try:\n        return int(text)\n    except ValueError:\n        return 0\nprint(safe_int('12'))\nprint(safe_int('bad'))",
+    "input": ""
+  },
+  "workshop-modules": {
+    "code": "import math\n\ndef distance(x, y):\n    return math.sqrt(x ** 2 + y ** 2)\nprint(distance(3, 4))",
+    "input": ""
+  },
+  "workshop-testing": {
+    "code": "def largest(numbers):\n    if not numbers:\n        return None\n    return max(numbers)\nprint(largest([3, 9, 2]))\nprint(largest([]))",
+    "input": ""
+  },
+  "workshop-final": {
+    "code": "def daily_distance(distances, days):\n    if days <= 0:\n        return None\n    return round(sum(distances) / days, 1)\n\nprint(daily_distance([10, 15, 8], 3))",
+    "input": ""
+  },
+  "data-toolkit-money": {
+    "code": "from decimal import Decimal, InvalidOperation, ROUND_HALF_UP\ndef to_paise(value):\n    if value is None or not value.strip():\n        return None\n    try:\n        amount = Decimal(value.strip().replace('₹', '').replace(',', ''))\n        if not amount.is_finite() or amount < 0:\n            raise ValueError('Invalid amount')\n        return int(amount.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP) * 100)\n    except InvalidOperation as exc:\n        raise ValueError('Invalid amount') from exc\n\nprint(to_paise('₹1,200.505'))  # 120051\n",
+    "input": ""
+  },
+  "data-toolkit-emails": {
+    "code": "def unique_emails(values):\n    seen, result = set(), []\n    for value in values:\n        if value is None: continue\n        email = value.strip().lower()\n        if email.count('@') != 1 or not all(email.split('@')): continue\n        if email not in seen:\n            seen.add(email)\n            result.append(email)\n    return result\n\nprint(unique_emails([' A@X.COM ', 'a@x.com', None]))  # ['a@x.com']\n",
+    "input": ""
+  },
+  "data-toolkit-batches": {
+    "code": "def batches(items, size):\n    if size <= 0: raise ValueError('size must be positive')\n    batch = []\n    for item in items:\n        batch.append(item)\n        if len(batch) == size:\n            yield batch\n            batch = []\n    if batch: yield batch\n\nprint(list(batches(iter(range(5)), 2)))  # [[0, 1], [2, 3], [4]]\n",
+    "input": ""
+  },
+  "data-toolkit-latest": {
+    "code": "def latest_records(rows):\n    latest = {}\n    for row in rows:\n        if row['id'] not in latest or row['updated_at'] >= latest[row['id']]['updated_at']:\n            latest[row['id']] = dict(row)\n    return [latest[key] for key in sorted(latest)]\n\nprint(latest_records([{'id':'a','updated_at':'2026-01-01T00:00:00Z'}]))\n",
+    "input": ""
+  },
+  "data-toolkit-csv": {
+    "code": "import csv, io, math\ndef read_orders(text):\n    valid, rejected = [], []\n    for number, row in enumerate(csv.DictReader(io.StringIO(text)),2):\n        try:\n            order_id, amount = int(row['order_id']), float(row['amount'])\n            customer = row['customer'].strip()\n            if not customer or not math.isfinite(amount) or amount < 0: raise ValueError('invalid row')\n            valid.append(dict(order_id=order_id,customer=customer,amount=amount))\n        except (ValueError, TypeError, KeyError, AttributeError):\n            rejected.append(number)\n    return valid, rejected\n\nprint(read_orders('order_id,customer,amount\\n1,Ada,20.5\\n'))\n",
+    "input": ""
+  },
+  "data-toolkit-json": {
+    "code": "def flatten_orders(orders):\n    return [dict(order_id=o['id'],email=(o.get('customer') or {}).get('email'),sku=i['sku'],qty=i['qty'])\n            for o in orders for i in o.get('items', [])]\n\nprint(flatten_orders([{'id':1,'items':[{'sku':'A','qty':2}]}]))\n",
+    "input": ""
+  },
+  "data-toolkit-utc": {
+    "code": "from datetime import datetime, timezone\ndef utc_day(timestamp):\n    dt = datetime.fromisoformat(timestamp.replace('Z','+00:00'))\n    if dt.tzinfo is None: raise ValueError('Offset required')\n    return dt.astimezone(timezone.utc).date().isoformat()\n\nprint(utc_day('2026-01-02T00:30:00+05:30'))  # 2026-01-01\n",
+    "input": ""
+  },
+  "data-toolkit-profile": {
+    "code": "def profile_rows(rows):\n    values=[r['amount'] for r in rows if r['amount'] is not None]\n    return dict(rows=len(rows),missing_amounts=len(rows)-len(values),duplicate_ids=len(rows)-len({r['id'] for r in rows}),amount_min=min(values) if values else None,amount_max=max(values) if values else None)\n\nprint(profile_rows([{'id':1,'amount':0},{'id':1,'amount':None}]))\n",
+    "input": ""
+  },
+  "numpy-lab-mask": {
+    "code": "import numpy as np\ndef valid_readings(values):\n    a=np.asarray(values,dtype=float)\n    return a[np.isfinite(a) & (a >= 0)]\n\nprint(valid_readings([2, -1, float(\"nan\"), 0]))  # [2. 0.]\n",
+    "input": ""
+  },
+  "numpy-lab-divide": {
+    "code": "import numpy as np\ndef safe_ratio(numerator, denominator):\n    a,b=np.asarray(numerator,dtype=float),np.asarray(denominator,dtype=float)\n    return np.divide(a,b,out=np.full(a.shape,np.nan),where=b!=0)\n\nprint(safe_ratio([2, 0], [4, 0]))  # [0.5 nan]\n",
+    "input": ""
+  },
+  "numpy-lab-scale": {
+    "code": "import numpy as np\ndef standardize(matrix):\n    a=np.asarray(matrix,dtype=float)\n    std=a.std(axis=0)\n    return (a-a.mean(axis=0))/np.where(std==0,1,std)\n\nprint(standardize([[1, 9], [3, 9], [5, 9]]))\n",
+    "input": ""
+  },
+  "numpy-lab-weighted": {
+    "code": "import numpy as np\ndef weighted_price(prices, units):\n    p,u=np.asarray(prices,dtype=float),np.asarray(units,dtype=float)\n    if (u<0).any(): raise ValueError('negative weight')\n    return float((p*u).sum()/u.sum()) if u.sum() else None\n\nprint(weighted_price([10,20], [9,1]))  # 11.0\n",
+    "input": ""
+  },
+  "numpy-lab-winsor": {
+    "code": "import numpy as np\ndef clip_values(values, low, high):\n    if low>high: raise ValueError('reversed bounds')\n    return np.clip(np.asarray(values,dtype=float),low,high)\n\nprint(clip_values([-9,2,99], 0,10))  # [0. 2. 10.]\n",
+    "input": ""
+  },
+  "numpy-lab-impute": {
+    "code": "import numpy as np\ndef impute_columns(matrix):\n    a=np.array(matrix,dtype=float,copy=True)\n    counts=np.sum(~np.isnan(a),axis=0)\n    means=np.divide(np.nansum(a,axis=0),counts,out=np.zeros(a.shape[1]),where=counts!=0)\n    return np.where(np.isnan(a),means,a)\n\nprint(impute_columns([[1,float(\"nan\")],[3,5]]))\n",
+    "input": ""
+  },
+  "numpy-lab-distances": {
+    "code": "import numpy as np\ndef distances(points, centers):\n    p,c=np.asarray(points,dtype=float),np.asarray(centers,dtype=float)\n    return np.sqrt(((p[:,None,:]-c[None,:,:])**2).sum(axis=2))\n\nprint(distances([[0,0],[3,4]], [[0,0]]))  # [[0.], [5.]]\n",
+    "input": ""
+  },
+  "numpy-lab-kpi": {
+    "code": "import numpy as np\ndef summarize_traffic(matrix):\n    a=np.asarray(matrix)\n    if (a<0).any() or (a[:,1]>a[:,0]).any(): raise ValueError('invalid counts')\n    visits,conversions=int(a[:,0].sum()),int(a[:,1].sum())\n    return dict(visits=visits,conversions=conversions,rate=conversions/visits if visits else None,active_days=int((a[:,0]>0).sum()))\n\nprint(summarize_traffic([[100,10],[10,5],[0,0]]))\n",
+    "input": ""
+  },
+  "pandas-workbench-types": {
+    "code": "import pandas as pd\ndef clean_amounts(df):\n    out=df.copy()\n    out['amount']=pd.to_numeric(out['amount'].astype('string').str.replace(',','',regex=False).str.strip(),errors='coerce')\n    return out\n\nprint(clean_amounts(pd.DataFrame({'amount':['1,200','bad','0']})))\n",
+    "input": ""
+  },
+  "pandas-workbench-missing": {
+    "code": "import pandas as pd\ndef missing_report(df):\n    counts=df.isna().sum()\n    return pd.DataFrame({'missing_count':counts,'missing_fraction':counts/len(df) if len(df) else counts.astype(float)})\n\nprint(missing_report(pd.DataFrame({'a':[1,None],'b':[0,2]})))\n",
+    "input": ""
+  },
+  "pandas-workbench-dedup": {
+    "code": "import pandas as pd\ndef customer_snapshot(df):\n    out=df.copy()\n    out['_time']=pd.to_datetime(out['updated_at'],utc=True,format='mixed')\n    out['_position']=range(len(out))\n    out=out.sort_values(['_time','_position']).drop_duplicates('customer_id',keep='last')\n    return out.sort_values('customer_id').drop(columns=['_time','_position']).reset_index(drop=True)\n\nprint(customer_snapshot(pd.DataFrame({'customer_id':['a','a'],'updated_at':['2026-01-01T00:00:00Z','2026-01-02T00:00:00Z'],'value':[1,2]})))\n",
+    "input": ""
+  },
+  "pandas-workbench-revenue": {
+    "code": "import pandas as pd\ndef net_sales(df):\n    out=df[df['status'].isin(['paid','refunded'])].copy()\n    out['net_revenue']=out['amount'].where(out['status']=='paid',-out['amount'])\n    return out.groupby('region',as_index=False)['net_revenue'].sum().sort_values('region').reset_index(drop=True)\n\nprint(net_sales(pd.DataFrame({'region':['N','N'],'status':['paid','refunded'],'amount':[20,5]})))\n",
+    "input": ""
+  },
+  "pandas-workbench-join": {
+    "code": "import pandas as pd\ndef attach_regions(orders, customers):\n    out=orders.merge(customers,on='customer_id',how='left',sort=False,validate='many_to_one',indicator=True)\n    if (out['_merge']!='both').any(): raise ValueError('Orphan order')\n    return out[['order_id','customer_id','amount','region']]\n\nprint(attach_regions(pd.DataFrame({'order_id':[1],'customer_id':['a'],'amount':[9]}),pd.DataFrame({'customer_id':['a'],'region':['N']})))\n",
+    "input": ""
+  },
+  "pandas-workbench-daily": {
+    "code": "import pandas as pd\ndef daily_revenue(df):\n    if df.empty: return pd.Series([],index=pd.DatetimeIndex([],tz='UTC'),dtype=float)\n    out=df.copy()\n    out['timestamp']=pd.to_datetime(out['timestamp'],utc=True,format='mixed')\n    return out.set_index('timestamp')['amount'].resample('D').sum()\n\nprint(daily_revenue(pd.DataFrame({'timestamp':['2026-01-01T12:00:00Z','2026-01-03T12:00:00Z'],'amount':[5,9]})))\n",
+    "input": ""
+  },
+  "pandas-workbench-lag": {
+    "code": "import pandas as pd\ndef previous_amount(df):\n    out=df.copy()\n    out['_position']=range(len(out))\n    out=out.sort_values(['customer_id','timestamp','_position'])\n    out['previous_amount']=out.groupby('customer_id')['amount'].shift(1)\n    return out.sort_values('_position').drop(columns='_position')\n\nprint(previous_amount(pd.DataFrame({'customer_id':['a','a'],'timestamp':['2026-01-01','2026-01-02'],'amount':[10,20]})))\n",
+    "input": ""
+  },
+  "pandas-workbench-cohort": {
+    "code": "import pandas as pd\ndef day_one_retention(df):\n    if df.empty: return None\n    out=df.copy()\n    out['day']=pd.to_datetime(out['timestamp'],utc=True,format='mixed').dt.floor('D')\n    first=out.groupby('user_id')['day'].transform('min')\n    retained=out.loc[out['day']==first+pd.Timedelta(days=1),'user_id'].nunique()\n    return float(retained/out['user_id'].nunique())\n\nprint(day_one_retention(pd.DataFrame({'user_id':['a','a','b'],'timestamp':['2026-01-01T00:00:00Z','2026-01-02T00:00:00Z','2026-01-01T00:00:00Z']})))  # 0.5\n",
+    "input": ""
+  },
+  "sql-python-parameters": {
+    "code": "def customer_orders(conn, customer):\n    return conn.execute('SELECT id, amount FROM orders WHERE customer = ? ORDER BY id',(customer,)).fetchall()\n\n# Tables and connections are supplied by the exercise checks.\n# Define customer_orders; then choose Check answer.\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE orders(id INTEGER,customer TEXT,amount REAL)')\nconn.executemany('INSERT INTO orders VALUES(?,?,?)', [(2, \"O'Neil\", 5), (1, \"O'Neil\", 3), (3, 'Ada', 7)])\nresult = customer_orders(conn, \"O'Neil\")\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-aggregate": {
+    "code": "def revenue_customers(conn, minimum):\n    return conn.execute(\"SELECT customer, SUM(COALESCE(amount,0)) AS total FROM orders WHERE status='paid' GROUP BY customer HAVING SUM(COALESCE(amount,0)) >= ? ORDER BY total DESC, customer ASC\",(minimum,)).fetchall()\n\n# Implement the query helper. The checks create the orders table.\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE orders(customer TEXT,status TEXT,amount REAL)')\nconn.executemany('INSERT INTO orders VALUES(?,?,?)', [('b', 'paid', 10), ('a', 'paid', 5), ('a', 'paid', 5), ('a', 'canceled', 90), ('c', 'paid', None)])\nresult = revenue_customers(conn, 10)\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-leftjoin": {
+    "code": "def customer_summary(conn):\n    return conn.execute('SELECT c.id, COUNT(o.id), COALESCE(SUM(o.amount),0) FROM customers c LEFT JOIN orders o ON o.customer_id=c.id GROUP BY c.id ORDER BY c.id').fetchall()\n\n# Implement customer_summary(conn); checks create the dimension and fact tables.\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.executescript('CREATE TABLE customers(id INTEGER PRIMARY KEY,name TEXT); CREATE TABLE orders(id INTEGER PRIMARY KEY,customer_id INTEGER,amount REAL);')\nconn.executemany('INSERT INTO customers VALUES(?,?)', [(1, 'Ada'), (2, 'Ada'), (3, 'Bob')])\nconn.executemany('INSERT INTO orders VALUES(?,?,?)', [(1, 1, 5), (2, 1, 7), (3, 3, 0)])\nresult = customer_summary(conn)\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-window": {
+    "code": "def latest_events(conn):\n    return conn.execute('WITH ranked AS (SELECT account_id,status,ROW_NUMBER() OVER(PARTITION BY account_id ORDER BY occurred_at DESC,event_id DESC) AS rn FROM events) SELECT account_id,status FROM ranked WHERE rn=1 ORDER BY account_id').fetchall()\n\n# Implement latest_events(conn) using a window function.\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE events(event_id INTEGER PRIMARY KEY,account_id TEXT,occurred_at TEXT,status TEXT)')\nconn.executemany('INSERT INTO events VALUES(?,?,?,?)', [(1, 'a', '2026-01-02', 'open'), (2, 'a', '2026-01-01', 'closed'), (3, 'a', '2026-01-02', 'paused'), (4, 'b', '2026-01-01', 'open')])\nresult = latest_events(conn)\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-running": {
+    "code": "def running_balances(conn):\n    return conn.execute('SELECT id,account_id,SUM(amount) OVER(PARTITION BY account_id ORDER BY ts,id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM transactions ORDER BY account_id,ts,id').fetchall()\n\n# Implement running_balances(conn).\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE transactions(id INTEGER PRIMARY KEY,account_id TEXT,ts TEXT,amount REAL)')\nconn.executemany('INSERT INTO transactions VALUES(?,?,?,?)', [(2, 'a', '2026-01-01', -3), (1, 'a', '2026-01-01', 10), (3, 'b', '2026-01-01', 5)])\nresult = running_balances(conn)\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-rank": {
+    "code": "def top_products(conn, n):\n    if n<=0: return []\n    return conn.execute('WITH totals AS (SELECT category,product,SUM(revenue) AS total FROM sales GROUP BY category,product), ranked AS (SELECT *,DENSE_RANK() OVER(PARTITION BY category ORDER BY total DESC) AS r FROM totals) SELECT category,product,total FROM ranked WHERE r<=? ORDER BY category,total DESC,product',(n,)).fetchall()\n\n# Implement top_products(conn, n).\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE sales(category TEXT,product TEXT,revenue REAL)')\nconn.executemany('INSERT INTO sales VALUES(?,?,?)', [('A', 'x', 5), ('A', 'x', 5), ('A', 'y', 10), ('A', 'z', 3), ('B', 'w', 1)])\nresult = top_products(conn, 1)\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-retention": {
+    "code": "def retention_sql(conn):\n    return conn.execute(\"WITH firsts AS (SELECT user_id,MIN(day) AS first_day FROM activity GROUP BY user_id) SELECT AVG(CASE WHEN EXISTS(SELECT 1 FROM activity a WHERE a.user_id=f.user_id AND a.day=date(f.first_day,'+1 day')) THEN 1.0 ELSE 0.0 END) FROM firsts f\").fetchone()[0]\n\n# Implement retention_sql(conn). Dates are pre-normalized UTC days.\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE activity(user_id TEXT,day TEXT)')\nconn.executemany('INSERT INTO activity VALUES(?,?)', [('a', '2026-01-01'), ('a', '2026-01-02'), ('a', '2026-01-02'), ('b', '2026-01-01'), ('b', '2026-01-03')])\nresult = retention_sql(conn)\nprint(result)\n",
+    "input": ""
+  },
+  "sql-python-transaction": {
+    "code": "def load_events(conn, rows):\n    with conn:\n        conn.executemany('INSERT INTO events(id,amount) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET amount=excluded.amount',rows)\n\n# Implement load_events(conn, rows). Checks include a deliberate constraint failure.\n\n\n# Tiny synthetic demonstration fixture from the exercise checks.\nimport sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE events(id TEXT PRIMARY KEY,amount REAL NOT NULL CHECK(amount>=0))')\nload_events(conn, [('a', 5)])\nload_events(conn, [('a', 7), ('b', 2)])\nload_events(conn, [('a', 7), ('b', 2)])\nresult = conn.execute('SELECT * FROM events ORDER BY id').fetchall()\nprint(result)\n",
+    "input": ""
+  },
+  "analytics-lab-funnel": {
+    "code": "def conversion_rate(visitors, buyers):\n    v,b=set(visitors),set(buyers)\n    return len(v & b)/len(v) if v else None\n\nprint(conversion_rate(['a','a','b'],['a']))  # 0.5\n",
+    "input": ""
+  },
+  "analytics-lab-confusion": {
+    "code": "def classification_report(actual, predicted):\n    tp=sum(a==1 and p==1 for a,p in zip(actual,predicted))\n    fp=sum(a==0 and p==1 for a,p in zip(actual,predicted))\n    fn=sum(a==1 and p==0 for a,p in zip(actual,predicted))\n    tn=sum(a==0 and p==0 for a,p in zip(actual,predicted))\n    return dict(tp=tp,fp=fp,fn=fn,tn=tn,precision=tp/(tp+fp) if tp+fp else None,recall=tp/(tp+fn) if tp+fn else None)\n\nprint(classification_report([1,1,0,0], [1,0,1,0]))\n",
+    "input": ""
+  },
+  "analytics-lab-micro": {
+    "code": "def campaign_rates(rows):\n    rates=[s/n for s,n in rows if n>0]\n    trials=sum(n for s,n in rows)\n    return (sum(rates)/len(rates) if rates else None, sum(s for s,n in rows)/trials if trials else None)\n\nprint(campaign_rates([(1,2),(9,90)]))\n",
+    "input": ""
+  },
+  "analytics-lab-split": {
+    "code": "def time_split(rows, cutoff):\n    return ([dict(r) for r in rows if r['day']<=cutoff],[dict(r) for r in rows if r['day']>cutoff])\n\nprint(time_split([{'day':'2026-01-01'},{'day':'2026-01-03'}], '2026-01-02'))\n",
+    "input": ""
+  },
+  "analytics-lab-train-scale": {
+    "code": "import numpy as np\ndef scale_train_test(train, test):\n    tr,te=np.asarray(train,dtype=float),np.asarray(test,dtype=float)\n    mean,std=tr.mean(axis=0),tr.std(axis=0)\n    scale=np.where(std==0,1,std)\n    return (tr-mean)/scale,(te-mean)/scale\n\nprint(scale_train_test([[0,5],[2,5]], [[100,7]]))\n",
+    "input": ""
+  },
+  "analytics-lab-interval": {
+    "code": "import math, statistics\ndef mean_interval(values):\n    if len(values)<2: return None\n    mean=statistics.mean(values)\n    margin=1.96*statistics.stdev(values)/math.sqrt(len(values))\n    return mean,mean-margin,mean+margin\n\nprint(mean_interval([1,2,3,4]))\n",
+    "input": ""
+  },
+  "analytics-lab-baseline": {
+    "code": "def persistence_mae(values):\n    if len(values)<2: return None\n    return sum(abs(values[i]-values[i-1]) for i in range(1,len(values)))/(len(values)-1)\n\nprint(persistence_mae([10,12,9,15]))  # 3.666...\n",
+    "input": ""
+  },
+  "analytics-lab-experiment": {
+    "code": "def experiment_summary(control, treatment, max_error_rate):\n    a=control['conversions']/control['visitors'] if control['visitors'] else None\n    b=treatment['conversions']/treatment['visitors'] if treatment['visitors'] else None\n    lift=b-a if a is not None and b is not None else None\n    return dict(control_rate=a,treatment_rate=b,absolute_lift=lift,relative_lift=lift/a if a not in (None,0) and lift is not None else None,guardrail_ok=bool(treatment['visitors'] and treatment['errors']/treatment['visitors']<=max_error_rate))\n\nprint(experiment_summary({'visitors':100,'conversions':10,'errors':1}, {'visitors':100,'conversions':15,'errors':8}, .05))\n",
+    "input": ""
+  },
+  "pipelines-quarantine": {
+    "code": "import math\ndef validate_batch(rows):\n    valid,rejected=[],[]\n    for i,row in enumerate(rows):\n        if not isinstance(row.get('id'),str) or not row['id'].strip():\n            rejected.append((i,'id'));continue\n        a=row.get('amount')\n        if isinstance(a,bool) or not isinstance(a,(int,float)) or not math.isfinite(a) or a<0:\n            rejected.append((i,'amount'));continue\n        valid.append(dict(row))\n    return valid,rejected\n\nprint(validate_batch([{'id':'a','amount':0},{'id':'b','amount':-1}]))\n",
+    "input": ""
+  },
+  "pipelines-pagination": {
+    "code": "def collect_pages(fetch_page):\n    cursor=None;seen=set();items=[]\n    while True:\n        if cursor in seen: raise ValueError('cursor cycle')\n        seen.add(cursor)\n        page=fetch_page(cursor);items.extend(page['items'])\n        cursor=page['next_cursor']\n        if cursor is None: return items\n\nprint(collect_pages(lambda cursor: {'items':[1,2], 'next_cursor':None}))\n",
+    "input": ""
+  },
+  "pipelines-retry": {
+    "code": "def retry_call(operation, attempts, sleep):\n    if attempts<1: raise ValueError('positive attempts required')\n    for i in range(attempts):\n        try: return operation()\n        except TimeoutError:\n            if i==attempts-1: raise\n            sleep(2**i)\n\nprint(retry_call(lambda: 42, 3, lambda seconds: None))  # 42\n",
+    "input": ""
+  },
+  "pipelines-watermark": {
+    "code": "def select_window(rows, checkpoint, lookback):\n    if lookback<0: raise ValueError('negative lookback')\n    selected=[dict(r) for r in rows if r['ts']>=checkpoint-lookback]\n    return selected,max([checkpoint]+[r['ts'] for r in selected])\n\nprint(select_window([{'ts':95},{'ts':103}], 100, 5))\n",
+    "input": ""
+  },
+  "pipelines-idempotency": {
+    "code": "def merge_versions(current, incoming):\n    out={k:dict(v) for k,v in current.items()}\n    for row in incoming:\n        key=row['id']\n        if key not in out or row['version']>out[key]['version']: out[key]=dict(row)\n    return out\n\nprint(merge_versions({}, [{'id':'a','version':1,'amount':7}]))\n",
+    "input": ""
+  },
+  "pipelines-chunks": {
+    "code": "def aggregate_chunks(chunks):\n    totals={}\n    for chunk in chunks:\n        for row in chunk:\n            key=row['region'];totals[key]=totals.get(key,0)+row['amount']\n    return totals\n\nprint(aggregate_chunks([[{'region':'N','amount':10}], [{'region':'N','amount':-2}]]))\n",
+    "input": ""
+  },
+  "pipelines-redact": {
+    "code": "def redact(value):\n    secrets={'token','password','api_key','authorization'}\n    if isinstance(value,dict): return {k:'***' if isinstance(k,str) and k.lower() in secrets else redact(v) for k,v in value.items()}\n    if isinstance(value,list): return [redact(v) for v in value]\n    return value\n\nprint(redact({'token':'hidden','nested':[{'password':'hidden','ok':1}]}))\n",
+    "input": ""
+  },
+  "pipelines-quality": {
+    "code": "def quality_gate(rows, max_missing_fraction):\n    n=len(rows);duplicates=n-len({r['id'] for r in rows})\n    missing=sum(r['amount'] is None for r in rows)/n if n else 0.\n    return dict(row_count=n,duplicate_count=duplicates,missing_fraction=missing,passed=bool(n and duplicates==0 and missing<=max_missing_fraction))\n\nprint(quality_gate([{'id':1,'amount':None},{'id':2,'amount':0}], .5))\n",
+    "input": ""
+  },
+  "production-data-defaults": {
+    "code": "def add_tag(tag, tags=None):\n    return ([] if tags is None else list(tags))+[tag]\n\nprint(add_tag('cleaned', ['raw']))  # ['raw', 'cleaned']\n",
+    "input": ""
+  },
+  "production-data-jsonlines": {
+    "code": "import json\ndef json_objects(lines):\n    for number,line in enumerate(lines,1):\n        if not line.strip(): continue\n        try:\n            value=json.loads(line)\n            yield number,value if isinstance(value,dict) else None\n        except json.JSONDecodeError:\n            yield number,None\n\nprint(list(json_objects(['{\"id\":1}', 'bad', ''])))\n",
+    "input": ""
+  },
+  "production-data-hashjoin": {
+    "code": "def hash_left_join(facts, dimension):\n    index={}\n    for row in dimension:\n        if row['id'] in index: raise ValueError('duplicate dimension key')\n        index[row['id']]=row['label']\n    return [dict(row,label=index.get(row['dimension_id'])) for row in facts]\n\nprint(hash_left_join([{'dimension_id':1,'value':9}], [{'id':1,'label':'N'}]))\n",
+    "input": ""
+  },
+  "production-data-sessions": {
+    "code": "def session_ids(events, gap):\n    if gap<0: raise ValueError('negative gap')\n    result=[0]*len(events);state={}\n    for i,row in sorted(enumerate(events),key=lambda x:(x[1]['user'],x[1]['minute'],x[0])):\n        user,t=row['user'],row['minute']\n        previous,session=state.get(user,(t,1))\n        if t-previous>gap: session+=1\n        result[i]=session;state[user]=(t,session)\n    return result\n\nprint(session_ids([{'user':'a','minute':0},{'user':'a','minute':31}],30))  # [1, 2]\n",
+    "input": ""
+  },
+  "production-data-asof": {
+    "code": "from bisect import bisect_right\ndef plans_at_event(events, history):\n    versions={}\n    for i,row in enumerate(history): versions.setdefault(row['customer_id'],[]).append((row['effective_ts'],i,row['plan']))\n    lookup={}\n    for key,rows in versions.items():\n        rows.sort();lookup[key]=([r[0] for r in rows],[r[2] for r in rows])\n    out=[]\n    for event in events:\n        times,plans=lookup.get(event['customer_id'],([],[]))\n        index=bisect_right(times,event['ts'])-1\n        out.append(plans[index] if index>=0 else None)\n    return out\n\nprint(plans_at_event([{'customer_id':'a','ts':10}], [{'customer_id':'a','effective_ts':20,'plan':'pro'}]))  # [None]\n",
+    "input": ""
+  },
+  "production-data-freshness": {
+    "code": "def freshness(timestamps, now, max_age):\n    if max_age<0: raise ValueError('negative max age')\n    if not timestamps: return 'empty'\n    latest=max(timestamps)\n    if latest>now: return 'future'\n    return 'stale' if now-latest>max_age else 'fresh'\n\nprint(freshness([80,90],100,10))  # fresh\n",
+    "input": ""
+  },
+  "production-data-intervals": {
+    "code": "def has_overlap(windows):\n    if any(start>=end for start,end in windows): raise ValueError('invalid interval')\n    furthest=None\n    for start,end in sorted(windows):\n        if furthest is not None and start<furthest: return True\n        furthest=end if furthest is None else max(furthest,end)\n    return False\n\nprint(has_overlap([(0,2),(2,4)]))  # False\n",
+    "input": ""
+  },
+  "production-data-checkpoint": {
+    "code": "def process_batch(rows, checkpoint, write_rows, save_checkpoint):\n    new=max([checkpoint]+[r['ts'] for r in rows])\n    write_rows(rows)\n    save_checkpoint(new)\n    return new\n\nprint(process_batch([{'ts':12}],10,lambda rows:None,lambda cp:None))  # 12\n",
+    "input": ""
+  },
+  "data-case-studies-retail": {
+    "code": "def retail_revenue(events):\n    latest={}\n    for e in events:\n        if e['id'] not in latest or e['version']>latest[e['id']]['version']: latest[e['id']]=e\n    totals={}\n    for e in latest.values():\n        if e['status']=='canceled': continue\n        key=e['region']; sign=1 if e['status']=='paid' else -1\n        totals[key]=totals.get(key,0)+sign*e['amount']\n    return dict(sorted(totals.items()))\n\nprint(retail_revenue([{'id':'o1','version':1,'region':'N','status':'paid','amount':100}]))\n",
+    "input": ""
+  },
+  "data-case-studies-attribution": {
+    "code": "def attribute(conversions, touches, lookback):\n    if lookback<0: raise ValueError('negative lookback')\n    result=[]\n    for c in conversions:\n        candidates=[(t['ts'],i,t['channel']) for i,t in enumerate(touches) if t['user']==c['user'] and t['channel']!='direct' and c['ts']-lookback<=t['ts']<=c['ts']]\n        result.append(max(candidates)[2] if candidates else 'unattributed')\n    return result\n\nprint(attribute([{'user':'a','ts':10}],[{'user':'a','ts':8,'channel':'email'}],5))\n",
+    "input": ""
+  },
+  "data-case-studies-mrr": {
+    "code": "def mrr_at(subscriptions, ts):\n    return sum(s['price_paise']//12 if s['billing']=='annual' else s['price_paise'] for s in subscriptions if s['start']<=ts and (s['end'] is None or ts<s['end']))\n\nprint(mrr_at([{'id':'a','start':0,'end':None,'billing':'annual','price_paise':2400}],5))  # 200\n",
+    "input": ""
+  },
+  "data-case-studies-inventory": {
+    "code": "def reconcile_stock(warehouse, store):\n    out=[]\n    for sku in sorted(warehouse.keys() | store.keys()):\n        w,s=warehouse.get(sku),store.get(sku)\n        delta=s-w if sku in warehouse and sku in store else None\n        status='missing_warehouse' if sku not in warehouse else 'missing_store' if sku not in store else 'matched' if delta==0 else 'mismatch'\n        out.append(dict(sku=sku,warehouse=w,store=s,delta=delta,status=status))\n    return out\n\nprint(reconcile_stock({'A':5},{'A':3,'B':0}))\n",
+    "input": ""
+  },
+  "data-case-studies-settlement": {
+    "code": "def settlement_audit(orders, settlements):\n    totals={};seen=set()\n    for s in settlements:\n        if s['settlement_id'] in seen: continue\n        seen.add(s['settlement_id']);key=s['order_id']\n        totals[key]=totals.get(key,0)+s['amount_paise']\n    out=[]\n    for key in sorted(orders.keys() | totals.keys()):\n        expected=orders.get(key);settled=totals.get(key,0)\n        delta=settled-expected if key in orders else None\n        out.append(dict(order_id=key,expected=expected,settled=settled,delta=delta,status='unknown_order' if key not in orders else 'matched' if delta==0 else 'mismatch'))\n    return out\n\nprint(settlement_audit({'a':100},[{'settlement_id':'s1','order_id':'a','amount_paise':60}]))\n",
+    "input": ""
+  },
+  "data-case-studies-anomaly": {
+    "code": "import statistics\ndef anomaly_flags(values, window, threshold):\n    if window<2 or threshold<=0: raise ValueError('invalid detector configuration')\n    flags=[]\n    for i,value in enumerate(values):\n        if i<window: flags.append(False);continue\n        history=values[i-window:i];mean=statistics.mean(history);std=statistics.pstdev(history)\n        flags.append(value!=mean if std==0 else abs(value-mean)>threshold*std)\n    return flags\n\nprint(anomaly_flags([1,1,1,100],3,3))  # [False, False, False, True]\n",
+    "input": ""
+  },
+  "data-case-studies-features": {
+    "code": "def customer_features(customers, events, cutoff, lookback):\n    if lookback<0: raise ValueError('negative lookback')\n    state={key:dict(customer_id=key,purchase_count=0,total_paise=0,last_ts=None) for key in customers}\n    for e in events:\n        if e['customer_id'] not in state or not cutoff-lookback<=e['ts']<cutoff: continue\n        r=state[e['customer_id']];r['purchase_count']+=1;r['total_paise']+=e['amount_paise']\n        r['last_ts']=e['ts'] if r['last_ts'] is None else max(r['last_ts'],e['ts'])\n    return [state[key] for key in sorted(state)]\n\nprint(customer_features(['a'],[{'customer_id':'a','ts':99,'amount_paise':20}],100,10))\n",
+    "input": ""
+  },
+  "data-case-studies-final": {
+    "code": "def build_revenue_product(rows):\n    latest={};rejected=[]\n    for i,row in enumerate(rows):\n        reason=None\n        for key in ['id','version','region','amount_paise']:\n            v=row.get(key)\n            valid=(isinstance(v,str) and bool(v.strip())) if key in ('id','region') else (isinstance(v,int) and not isinstance(v,bool) and (v>=0 if key=='version' else True))\n            if not valid: reason=key;break\n        if reason: rejected.append((i,reason));continue\n        if row['id'] not in latest or row['version']>latest[row['id']]['version']: latest[row['id']]=row\n    totals={}\n    for row in latest.values(): totals[row['region']]=totals.get(row['region'],0)+row['amount_paise']\n    return dict(accepted=len(latest),rejected=rejected,revenue=dict(sorted(totals.items())))\n\nprint(build_revenue_product([{'id':'a','version':1,'region':'N','amount_paise':100}]))\n",
+    "input": ""
+  }
+}
